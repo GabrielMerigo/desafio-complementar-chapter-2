@@ -5,9 +5,9 @@ import { Container } from './styles';
 import api from '../../services/api';
 
 interface FoodProps {
-  food: Array<[]>
-  handleEditFood: () => void
-  handleDeleteFood: () => void;
+  food: Array<[]>;
+  handleEditFood: () => void;
+  handleDelete: (id: number) => Promise<void>;
 }
 
 function Food({ food, handleEditFood, handleDelete }: FoodProps) {
