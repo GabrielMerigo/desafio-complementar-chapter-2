@@ -15,11 +15,13 @@ interface Foods {
   price: number;
 }
 
+type EditingFood = Omit<Foods, 'image' | 'name' | 'description' | 'price'>;
+
 function Dashboard() {
   const [foods, setFoods] = useState<Foods[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editingFood, setEditingFood] = useState<Foods[]>([]);
+  const [editingFood, setEditingFood] = useState<EditingFood>();
   
 
   useEffect(() => {
@@ -47,7 +49,7 @@ function Dashboard() {
   async function handleUpdateFood(food: Foods){
     try {
       const foodUpdated = await api.put(
-        `/foods/${editingFood.}`,
+        `/foods/${editingFood.id}`,
         { ...editingFood, ...food },
       );
 
