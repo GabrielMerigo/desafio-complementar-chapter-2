@@ -13,19 +13,22 @@ interface Foods {
   name: string;
   description: string;
   price: number;
-}
+};
 
-type EditingFood = Omit<Foods, 'image' | 'name' | 'description' | 'price'>;
+type UserData = {
+  name: string;
+  company: string;
+};
 
 function Dashboard() {
   const [foods, setFoods] = useState<Foods[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editingFood, setEditingFood] = useState<EditingFood>();
-  
+  const [editingFood, setEditingFood] = useState<Foods>();
+  const [userData, setUserData] = useState<UserData>({} as UserData);
 
   useEffect(() => {
-    async function getFoods(){
+    async function getFoods() {
       const response = await api.get('/foods');
       setFoods(response.data);
     }
@@ -33,7 +36,7 @@ function Dashboard() {
     getFoods()
   }, [])
 
-  async function handleAddFood(food: Foods){
+  async function handleAddFood(food: Foods) {
     try {
       const response = await api.post('/foods', {
         ...food,
@@ -46,10 +49,10 @@ function Dashboard() {
     }
   }
 
-  async function handleUpdateFood(food: Foods){
+  async function handleUpdateFood(food: Foods) {
     try {
       const foodUpdated = await api.put(
-        `/foods/${editingFood.id}`,
+        `/foods/${editingFood?.id}`,
         { ...editingFood, ...food },
       );
 
@@ -63,7 +66,7 @@ function Dashboard() {
     }
   }
 
-  async function handleDeleteFood(id: number){
+  async function handleDeleteFood(id: number) {
     await api.delete(`/foods/${id}`);
 
     const foodsFiltered = foods.filter(food => food.id !== id);
@@ -71,16 +74,16 @@ function Dashboard() {
     setFoods(foodsFiltered);
   }
 
-  function toggleModal(){
+  function toggleModal() {
     setModalOpen(true);
   }
 
-  function toggleEditModal(){
+  function toggleEditModal() {
     setModalOpen(true)
   }
 
-  function handleEditFood(food: Foods){
-    setState({ editingFood: food});
+  function handleEditFood(food: Foods) {
+    setEditingFood(food);
     setEditModalOpen(true)
   }
 
