@@ -1,31 +1,34 @@
-import { createRef } from 'react';
-import { FiCheckSquare } from 'react-icons/fi';
+import { useRef } from "react";
+import { FiCheckSquare } from "react-icons/fi";
+import { FormHandles } from "@unform/core";
 
-import { Form } from './styles';
-import Modal from '../Modal';
-import Input from '../Input';
-import { Foods } from '../../pages/Dashboard';
+import { Form } from "./styles";
+import Modal from "../Modal";
+import Input from "../Input";
+import { FoodType } from "../Food";
 
-interface ModalEditFoodProps {
-  isOpen: boolean
-  setIsOpen: () => void
-  editingFood: Foods
-  handleUpdateFood: (food:Foods) => Promise<void>
-}
+type ModalEditFoodProps = {
+  isOpen: boolean;
+  setIsOpen(): void;
+  handleUpdateFood(food: FoodType): void;
+  editingFood: FoodType;
+};
 
-function ModalEditFood({ isOpen, setIsOpen, editingFood, handleUpdateFood }: ModalEditFoodProps) {
-  // this.formRef = createRef()
+function ModalEditFood(props: ModalEditFoodProps) {
+  const formRef = useRef<FormHandles>(null);
 
-  async function handleSubmit(data: Foods) {
+  async function handleSubmit(data: FoodType) {
+    props.handleUpdateFood(data);
+    props.setIsOpen();
+  }
 
-    handleUpdateFood(data);
-    setIsOpen();
-  };
-
-  // ref={formRef}
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Form onSubmit={handleSubmit} initialData={editingFood}>
+    <Modal isOpen={props.isOpen} setIsOpen={props.setIsOpen}>
+      <Form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        initialData={props.editingFood}
+      >
         <h1>Editar Prato</h1>
         <Input name="image" placeholder="Cole o link aqui" />
 
