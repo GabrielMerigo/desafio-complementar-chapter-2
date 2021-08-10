@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { FiEdit3, FiTrash } from 'react-icons/fi';
+import { Foods } from '../../pages/Dashboard';
 
 import { Container } from './styles';
 import api from '../../services/api';
 
 interface FoodProps {
-  food: Array<[]>;
-  handleEditFood: () => void;
+  food: Foods;
+  handleEditFood: (food: Foods) => void;
   handleDelete: (id: number) => Promise<void>;
 }
 
