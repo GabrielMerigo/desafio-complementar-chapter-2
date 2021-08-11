@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { FiEdit3, FiTrash } from 'react-icons/fi';
+import { useState } from "react";
+import { FiEdit3, FiTrash } from "react-icons/fi";
 
-import { Container } from './styles';
-import api from '../../services/api';
+import { Container } from "./styles";
+import api from "../../services/api";
 
 export type FoodType = {
   id: number;
@@ -13,16 +13,22 @@ export type FoodType = {
   image: string;
 };
 
-interface FoodProps {
+type FoodProps = {
   food: FoodType;
   handleEditFood(food: FoodType): void;
   handleDelete(foodId: number): void;
-}
+};
 
-function Food({ food, handleEditFood, handleDelete }: FoodProps) {
-  const [isAvailable, setIsAvailable] = useState(food.available)
+function Food(props: FoodProps) {
+  const [isAvailable, setIsAvailable] = useState(props.food.available);
+
+  function setEditingFood() {
+    props.handleEditFood(props.food);
+  }
 
   async function toggleAvailable() {
+    const { food } = props;
+
     await api.put(`/foods/${food.id}`, {
       ...food,
       available: !isAvailable,
@@ -30,22 +36,17 @@ function Food({ food, handleEditFood, handleDelete }: FoodProps) {
 
     setIsAvailable(!isAvailable);
   }
-  
-
-  function setEditingFood(){
-    handleEditFood(food);
-  }
 
   return (
     <Container available={isAvailable}>
       <header>
-        <img src={food.image} alt={food.name} />
+        <img src={props.food.image} alt={props.food.name} />
       </header>
       <section className="body">
-        <h2>{food.name}</h2>
-        <p>{food.description}</p>
+        <h2>{props.food.name}</h2>
+        <p>{props.food.description}</p>
         <p className="price">
-          R$ <b>{food.price}</b>
+          R$ <b>{props.food.price}</b>
         </p>
       </section>
       <section className="footer">
@@ -54,7 +55,7 @@ function Food({ food, handleEditFood, handleDelete }: FoodProps) {
             type="button"
             className="icon"
             onClick={setEditingFood}
-            data-testid={`edit-food-${food.id}`}
+            data-testid={`edit-food-${props.food.id}`}
           >
             <FiEdit3 size={20} />
           </button>
@@ -62,23 +63,26 @@ function Food({ food, handleEditFood, handleDelete }: FoodProps) {
           <button
             type="button"
             className="icon"
-            onClick={() => handleDelete(food.id)}
-            data-testid={`remove-food-${food.id}`}
+            onClick={() => props.handleDelete(props.food.id)}
+            data-testid={`remove-food-${props.food.id}`}
           >
             <FiTrash size={20} />
           </button>
         </div>
 
         <div className="availability-container">
-          <p>{isAvailable ? 'Disponível' : 'Indisponível'}</p>
+          <p>{isAvailable ? "Disponível" : "Indisponível"}</p>
 
-          <label htmlFor={`available-switch-${food.id}`} className="switch">
+          <label
+            htmlFor={`available-switch-${props.food.id}`}
+            className="switch"
+          >
             <input
-              id={`available-switch-${food.id}`}
+              id={`available-switch-${props.food.id}`}
               type="checkbox"
               checked={isAvailable}
               onChange={toggleAvailable}
-              data-testid={`change-status-food-${food.id}`}
+              data-testid={`change-status-food-${props.food.id}`}
             />
             <span className="slider" />
           </label>
@@ -87,6 +91,5 @@ function Food({ food, handleEditFood, handleDelete }: FoodProps) {
     </Container>
   );
 }
-
 
 export default Food;
